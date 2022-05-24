@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        input{
+            border: 1px solid;
+            height: 50px;
+        }
+        button{
+            background-color: black;
+            color: white;
+            padding: 5px 20px;
+        }
+        li{
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="flex h-screen">
+    <div class="w-1/2 flex items-center justify-center">
+        <form name="myForm" class="flex flex-col gap-y-4">
+            <input type="text" name="name" placeholder="name">
+            <input type="email" name="email" placeholder="email">
+            <input type="number" name="rating" placeholder="rating">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <div class="results bg-black text-white w-1/2 h-full flex items-center flex-col justify-center">
+        <h1>Result</h1>
+        <ul>
+            <li class="fiveStar">5 : <input type="range" value="0" step="1" min="0"> : <span>0</span></li>
+            <li class="fourStar">4 : <input type="range" value="0" step="1" min="0"> : <span>0</span></li>
+            <li class="threeStar">3 : <input type="range" value="0" step="1" min="0"> : <span>0</span></li>
+            <li class="twoStar">2 : <input type="range" value="0" step="1" min="0"> : <span>0</span></li>
+            <li class="oneStar">1 : <input type="range" value="0" step="1" min="0"> : <span>0</span></li>
+        </ul>
+    </div>
+</body>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    // ()
+
+    fetch("http://localhost:3000/poll")
+    .then(res=>res.json())
+    .then(res=>{
+        console.log("Response : ", res)
+
+        $(".fiveStar span").text(res.data[4])
+        $(".fiveStar input").attr({
+            "value": res.data[4],
+            "max": res.total
+        })
+        
+        $(".fourStar span").text(res.data[3])
+        $(".fourStar input").attr({
+            "value": res.data[3],
+            "max": res.total
+        })
+
+        $(".threeStar span").text(res.data[2])
+        $(".threeStar input").attr({
+            "value": res.data[2],
+            "max": res.total
+        })
+
+        $(".twoStar span").text(res.data[1])
+        $(".twoStar input").attr({
+            "value": res.data[1],
+            "max": res.total
+        })
+
+        $(".oneStar span").text(res.data[0])
+        $(".oneStar input").attr({
+            "value": res.data[0],
+            "max": res.total
+        })
+    })
+    .catch(err=>{
+        console.log("Error : ", err)
+    })
+
+    $("[name=myForm]").on("submit", function(e){
+        e.preventDefault()
+        $.ajax({
+            url: "http://localhost:3000/poll",
+            dataType: "json",
+            type: "Post",
+            async: true,
+            data: { "add": $("[name=rating]").val() },
+            success: function (data) {
+                console.log(data);
+            }
+        })
+    })
+</script>
+</html>
